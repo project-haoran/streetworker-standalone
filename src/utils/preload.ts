@@ -19,6 +19,12 @@ export const preload = () => {
       accessToken: "",
       owner: 10000,
       mongo: "mongodb://user:pwd@host/db",
+      oss: {
+        accessKeyId: "",
+        accessKeySecret: "",
+        region: "",
+        bucket: "",
+      },
     };
     writeFileSync(configPath, JSON.stringify(initConfig, null, 2));
     throw new Error(`'config.json' initialled`);

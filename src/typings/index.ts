@@ -1,10 +1,17 @@
-export interface GroupMessage {
-  message_type: string;
+import { Message } from "./message";
+import { Sender } from "./sender";
+
+export interface DataRaw {
+  post_type: string;
+  [key: string]: string;
+}
+
+export type MessageRaw = GroupMessage | PrivateMessage;
+
+export interface MessageBase {
   sub_type: string;
   message_id: number;
-  group_id: number;
   user_id: number;
-  anonymous: null;
   message: Message[];
   raw_message: string;
   font: number;
@@ -13,24 +20,19 @@ export interface GroupMessage {
   self_id: number;
   post_type: string;
 }
-
-export interface Message {
-  type: string;
-  data: Data;
+export interface GroupMessage extends MessageBase {
+  message_type: "group";
+  group_id: number;
+  anonymous: null;
 }
 
-export interface Data {
-  text: string;
+export interface PrivateMessage extends MessageBase {
+  message_type: "private";
 }
 
-export interface Sender {
-  user_id: number;
-  nickname: string;
-  card: null;
-  sex: string;
-  age: number;
-  area: string;
-  level: string;
-  role: string;
-  title: string;
+export interface ResponseData<T> {
+  status: string;
+  retcode: number;
+  data?: T;
+  echo: string;
 }

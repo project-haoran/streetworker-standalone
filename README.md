@@ -1,4 +1,4 @@
-# Project-Haoran/Streetworker-Standalone
+# project-haoran/streetworker-standalone
 
 ob11 ws 适配的独立版临时站街
 

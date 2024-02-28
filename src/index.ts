@@ -10,8 +10,10 @@ import { join } from "path";
 import { initMongoose } from "./utils/mongoose";
 
 import WebSocket from "ws";
+import { messageEventNameList } from "./utils/store";
+import { messageHandler } from "./messageHandler";
 
-logger.info("welcome to use haoran/streetworker standalone version");
+logger.info("project-haoran/streetworker standalone version");
 
 preload();
 
@@ -47,6 +49,12 @@ initMongoose().then(() => {
       const data = JSON.parse(raw.toString());
 
       if (data?.post_type === "meta_event") return;
+
+      messageEventNameList.forEach((name) => {
+        client.emit(name, raw);
+      });
+
+      messageHandler(client, data);
 
       console.log(raw.toString());
     } catch (error) {

@@ -11,8 +11,10 @@
   "author": "colour93",
   "license": "ISC",
   "dependencies": {
+    "ali-oss": "^6.20.0",
     "axios": "^1.6.7",
-    "chinese-s2t": "^1.0.0",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
     "mongoose": "^8.2.0",
     "nanoid": "3",
     "pino": "^8.19.0",
@@ -22,7 +24,11 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@types/ali-oss": "^6.16.11",
+    "@types/lodash": "^4.14.202",
+    "@types/minimist": "^1.2.5",
     "@types/node": "^20.11.20",
+    "@types/text-to-svg": "^3.1.4",
     "@types/ws": "^8.5.10",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.2",

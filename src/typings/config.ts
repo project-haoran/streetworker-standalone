@@ -3,4 +3,10 @@ export interface Config {
   accessToken?: string;
   owner: number;
   mongo: string;
+  oss: {
+    accessKeyId: string;
+    accessKeySecret: string;
+    region: string;
+    bucket: string;
+  };
 }
