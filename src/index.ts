@@ -54,8 +54,6 @@ initMongoose().then(() => {
       });
 
       messageHandler(client, data);
-
-      console.log(raw.toString());
     } catch (error) {
       console.error(error);
     }
