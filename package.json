@@ -1,6 +1,6 @@
 {
   "name": "streetworker-standalone",
-  "version": "0.1.0",
+  "version": "standalone-0.1.0",
   "description": "ob11 ws 适配的独立版临时站街",
   "scripts": {
     "test": "cross-env ENV=test ts-node src/test.ts",
@@ -20,7 +20,7 @@
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.1",
     "sharp": "^0.33.2",
-    "text-to-svg": "^3.1.5",
+    "text2svg": "^1.0.1",
     "ws": "^8.16.0"
   },
   "devDependencies": {
@@ -28,7 +28,6 @@
     "@types/lodash": "^4.14.202",
     "@types/minimist": "^1.2.5",
     "@types/node": "^20.11.20",
-    "@types/text-to-svg": "^3.1.4",
     "@types/ws": "^8.5.10",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.2",

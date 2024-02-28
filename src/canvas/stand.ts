@@ -776,13 +776,13 @@ async function genDetailItem(title: string, score: number, count: number) {
 
   const iconTop = (contentLineHeight - 24) / 2 + 2;
 
-  const titleText = text2svg.getSVG(title, {
+  const titleText = text2svg.toSVG(title, {
     fontSize: contentFontSize,
   });
-  const scoreText = text2svg.getSVG(`${score} 硬币`, {
+  const scoreText = text2svg.toSVG(`${score} 硬币`, {
     fontSize: contentFontSize,
   });
-  const countText = text2svg.getSVG(`${count} 人次`, {
+  const countText = text2svg.toSVG(`${count} 人次`, {
     fontSize: contentFontSize,
   });
 
@@ -801,7 +801,7 @@ async function genDetailItem(title: string, score: number, count: number) {
   })
     .composite([
       {
-        input: Buffer.from(titleText),
+        input: Buffer.from(titleText.svg),
         top: 0,
         left: 0,
       },
@@ -811,7 +811,7 @@ async function genDetailItem(title: string, score: number, count: number) {
         left: scoreIconLeft,
       },
       {
-        input: Buffer.from(scoreText),
+        input: Buffer.from(scoreText.svg),
         top: 0,
         left: scoreIconLeft + iconSize + 6,
       },
@@ -821,7 +821,7 @@ async function genDetailItem(title: string, score: number, count: number) {
         left: countIconLeft,
       },
       {
-        input: Buffer.from(countText),
+        input: Buffer.from(countText.svg),
         top: 0,
         left: countIconLeft + iconSize + 6,
       },
@@ -887,7 +887,7 @@ async function genAvatarGroup(friendsList: { qq: number; score: number }[]) {
 async function genAvatarItem(qq: number, score: number) {
   const avatar = await genAvatar(qq, avatarSize);
 
-  const scoreText = text2svg.getSVG(score == 0 ? "白嫖" : score.toString(), {
+  const scoreText = text2svg.toSVG(score == 0 ? "白嫖" : score.toString(), {
     fontSize: secondaryFontSize,
   });
 
@@ -911,15 +911,9 @@ async function genAvatarItem(qq: number, score: number) {
         left: avatarMargin,
       },
       {
-        input: Buffer.from(scoreText),
+        input: Buffer.from(scoreText.svg),
         top: avatarSize,
-        left: Math.ceil(
-          (avatarItemWidth -
-            text2svg.getWidth(score == 0 ? "白嫖" : score.toString(), {
-              fontSize: secondaryFontSize,
-            })) /
-            2
-        ),
+        left: Math.ceil((avatarItemWidth - scoreText.width) / 2),
       },
     ])
     .png()
@@ -1060,34 +1054,22 @@ async function genDataItem(score: number, count: number) {
 
   const iconTop = (contentLineHeight - 20) / 2;
 
-  const scoreText = text2svg.getSVG(`${score} 硬币`, {
+  const scoreText = text2svg.toSVG(`${score} 硬币`, {
     fontSize: contentFontSize,
   });
 
   const scoreIconLeft = Math.ceil(
-    (innerCardWidth / 2 -
-      (iconSize +
-        2 +
-        text2svg.getWidth(`${score} 硬币`, {
-          fontSize: contentFontSize,
-        }))) /
-      2
+    (innerCardWidth / 2 - (iconSize + 2 + scoreText.width)) / 2
   );
   const scoreTextLeft = scoreIconLeft + iconSize + 2;
 
-  const countText = text2svg.getSVG(`${count} 人次`, {
+  const countText = text2svg.toSVG(`${count} 人次`, {
     fontSize: contentFontSize,
   });
 
   const countIconLeft = Math.ceil(
     innerCardWidth / 2 +
-      (innerCardWidth / 2 -
-        (iconSize +
-          2 +
-          text2svg.getWidth(`${count} 人次`, {
-            fontSize: contentFontSize,
-          }))) /
-        2
+      (innerCardWidth / 2 - (iconSize + 2 + countText.width)) / 2
   );
   const countTextLeft = countIconLeft + iconSize + 2;
 
@@ -1111,7 +1093,7 @@ async function genDataItem(score: number, count: number) {
         left: scoreIconLeft,
       },
       {
-        input: Buffer.from(scoreText),
+        input: Buffer.from(scoreText.svg),
         top: 0,
         left: scoreTextLeft,
       },
@@ -1121,7 +1103,7 @@ async function genDataItem(score: number, count: number) {
         left: countIconLeft,
       },
       {
-        input: Buffer.from(countText),
+        input: Buffer.from(countText.svg),
         top: 0,
         left: countTextLeft,
       },
@@ -1159,7 +1141,7 @@ async function genCard(dataObj: {
   currentTop += avatarSize + cardChildrenMargin;
 
   // 生成昵称
-  const nickTextTemp = text2svg.getSVG(nick, {
+  const nickTextTemp = text2svg.toSVG(nick, {
     fontSize: contentFontSize,
   });
 
@@ -1168,17 +1150,13 @@ async function genCard(dataObj: {
 
   let nickText;
 
-  if (
-    text2svg.getWidth(nick, {
-      fontSize: contentFontSize,
-    }) > nickTextMaxWidth
-  ) {
-    nickText = await sharp(Buffer.from(nickTextTemp))
+  if (nickTextTemp.width > nickTextMaxWidth) {
+    nickText = await sharp(Buffer.from(nickTextTemp.svg))
       .resize(nickTextMaxWidth)
       .png()
       .toBuffer();
   } else {
-    nickText = Buffer.from(nickTextTemp);
+    nickText = Buffer.from(nickTextTemp.svg);
   }
 
   const nickTextHeight = (await sharp(nickText).metadata()).height;
@@ -1195,12 +1173,12 @@ async function genCard(dataObj: {
   });
 
   // 生成文案
-  const contentText = text2svg.getSVG(content, {
+  const contentText = text2svg.toSVG(content, {
     fontSize: contentFontSize,
   });
   const contentTop = cardPadding + avatarSize + cardChildrenMargin;
   compositeList.push({
-    input: Buffer.from(contentText),
+    input: Buffer.from(contentText.svg),
     top: currentTop,
     left: cardPadding,
   });
@@ -1226,51 +1204,33 @@ async function genCard(dataObj: {
   currentTop += contentLineHeight + cardChildrenMargin;
 
   // 生成页脚
-  const footerText = text2svg.getSVG(footer, {
+  const footerText = text2svg.toSVG(footer, {
     fontSize: secondaryFontSize,
   });
   compositeList.push({
-    input: Buffer.from(footerText),
+    input: Buffer.from(footerText.svg),
     top: currentTop,
-    left: Math.ceil(
-      (cardWidth -
-        text2svg.getWidth(footer, {
-          fontSize: secondaryFontSize,
-        })) /
-        2
-    ),
+    left: Math.ceil((cardWidth - footerText.width) / 2),
   });
   currentTop += secondaryLineHeight + 2;
 
-  const tsText = text2svg.getSVG(formatTs(timestamp), {
+  const tsText = text2svg.toSVG(formatTs(timestamp), {
     fontSize: secondaryFontSize,
   });
   compositeList.push({
-    input: Buffer.from(tsText),
+    input: Buffer.from(tsText.svg),
     top: currentTop,
-    left: Math.ceil(
-      (cardWidth -
-        text2svg.getWidth(formatTs(timestamp), {
-          fontSize: secondaryFontSize,
-        })) /
-        2
-    ),
+    left: Math.ceil((cardWidth - tsText.width) / 2),
   });
   currentTop += secondaryLineHeight + 2;
 
-  const versionText = text2svg.getSVG(version, {
+  const versionText = text2svg.toSVG(version, {
     fontSize: secondaryFontSize,
   });
   compositeList.push({
-    input: Buffer.from(versionText),
+    input: Buffer.from(versionText.svg),
     top: currentTop,
-    left: Math.ceil(
-      (cardWidth -
-        text2svg.getWidth(version, {
-          fontSize: secondaryFontSize,
-        })) /
-        2
-    ),
+    left: Math.ceil((cardWidth - versionText.width) / 2),
   });
   currentTop += secondaryLineHeight + cardChildrenMargin;
 

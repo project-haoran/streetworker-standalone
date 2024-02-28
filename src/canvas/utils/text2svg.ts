@@ -1,6 +1,6 @@
 import path from "path";
-import Text2svg from "text-to-svg";
+import Text2svg from "text2svg";
 
-export const text2svg = Text2svg.loadSync(
+export const text2svg = new Text2svg(
   path.join("assets", "fonts", "SourceHanSerifSC-Heavy.ttf")
 );

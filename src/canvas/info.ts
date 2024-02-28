@@ -101,13 +101,13 @@ async function genSalaryCard(dataObj: {
   const tsTextFontSize = 16;
 
   const dataScoreIcon = await sharp(
-    path.resolve(__dirname, "assets/info_wallet.png")
+    path.join("assets", "imgs", "info_wallet.png")
   ).toBuffer();
   const dataTotalCountIcon = await sharp(
-    path.resolve(__dirname, "assets/info_person_total.png")
+    path.join("assets", "imgs", "info_person_total.png")
   ).toBuffer();
   const dataFriendsCountIcon = await sharp(
-    path.resolve(__dirname, "assets/info_person_friends.png")
+    path.join("assets", "imgs", "info_person_friends.png")
   ).toBuffer();
 
   const cardPadding = 30;
@@ -135,41 +135,37 @@ async function genSalaryCard(dataObj: {
   // 生成文本
 
   // 昵称
-  const tempNickText = text2svg.getSVG(nick, {
+  const tempNickText = text2svg.toSVG(nick, {
     fontSize: nickFontSize,
   });
   // 昵称这里需要判断会不会过大
   let nickText;
-  if (
-    text2svg.getWidth(nick, {
-      fontSize: nickFontSize,
-    }) > nickTextMaxWidth
-  ) {
-    nickText = await sharp(Buffer.from(tempNickText))
+  if (tempNickText.width > nickTextMaxWidth) {
+    nickText = await sharp(Buffer.from(tempNickText.svg))
       .resize(nickTextMaxWidth)
       .toBuffer();
   } else {
-    nickText = Buffer.from(tempNickText);
+    nickText = Buffer.from(tempNickText.svg);
   }
 
   // 昵称下 intro
-  const introText = text2svg.getSVG(`人均 ${per} 硬币`, {
+  const introText = text2svg.toSVG(`人均 ${per} 硬币`, {
     fontSize: introFontSize,
   });
 
   // 数据
-  const dataScoreText = text2svg.getSVG(`${score} 硬币`, {
+  const dataScoreText = text2svg.toSVG(`${score} 硬币`, {
     fontSize: dataIntroFontSize,
   });
-  const dataTotalCountText = text2svg.getSVG(`${totalCount} 次`, {
+  const dataTotalCountText = text2svg.toSVG(`${totalCount} 次`, {
     fontSize: dataIntroFontSize,
   });
-  const dataFriendsCountText = text2svg.getSVG(`${friendsCount} 群友`, {
+  const dataFriendsCountText = text2svg.toSVG(`${friendsCount} 群友`, {
     fontSize: dataIntroFontSize,
   });
 
   // 时间戳
-  const tsText = text2svg.getSVG(formatTs(timestamp), {
+  const tsText = text2svg.toSVG(formatTs(timestamp), {
     fontSize: tsTextFontSize,
   });
 
@@ -202,7 +198,7 @@ async function genSalaryCard(dataObj: {
       },
       {
         // 简介
-        input: Buffer.from(introText),
+        input: Buffer.from(introText.svg),
         top: introTop,
         left: introLeft,
       },
@@ -214,15 +210,10 @@ async function genSalaryCard(dataObj: {
       },
       {
         // score text
-        input: Buffer.from(dataScoreText),
+        input: Buffer.from(dataScoreText.svg),
         top: dataIntroTextTop,
         left: Math.ceil(
-          dataScoreIconLeft +
-            dataIntroIconSize / 2 -
-            text2svg.getWidth(`${score} 硬币`, {
-              fontSize: dataIntroFontSize,
-            }) /
-              2
+          dataScoreIconLeft + dataIntroIconSize / 2 - dataScoreText.width / 2
         ),
       },
       {
@@ -233,15 +224,12 @@ async function genSalaryCard(dataObj: {
       },
       {
         // count text
-        input: Buffer.from(dataTotalCountText),
+        input: Buffer.from(dataTotalCountText.svg),
         top: dataIntroTextTop,
         left: Math.ceil(
           dataTotalCountIconLeft +
             dataIntroIconSize / 2 -
-            text2svg.getWidth(`${totalCount} 次`, {
-              fontSize: dataIntroFontSize,
-            }) /
-              2
+            dataTotalCountText.width / 2
         ),
       },
       {
@@ -252,28 +240,19 @@ async function genSalaryCard(dataObj: {
       },
       {
         // friendsCount text
-        input: Buffer.from(dataFriendsCountText),
+        input: Buffer.from(dataFriendsCountText.svg),
         top: dataIntroTextTop,
         left: Math.ceil(
           dataFriendsCountIconLeft +
             dataIntroIconSize / 2 -
-            text2svg.getWidth(`${friendsCount} 群友`, {
-              fontSize: dataIntroFontSize,
-            }) /
-              2
+            dataFriendsCountText.width / 2
         ),
       },
       {
         // ts text
-        input: Buffer.from(tsText),
+        input: Buffer.from(tsText.svg),
         top: tsTextTop,
-        left: Math.ceil(
-          (cardWidth -
-            text2svg.getWidth(formatTs(timestamp), {
-              fontSize: tsTextFontSize,
-            })) /
-            2
-        ),
+        left: Math.ceil((cardWidth - tsText.width) / 2),
       },
     ])
     .png()

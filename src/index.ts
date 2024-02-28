@@ -1,7 +1,6 @@
 /**
  * Haoran
  */
-
 import logger from "@/utils/logger";
 import { preload } from "@/utils/preload";
 import { Config } from "@/typings/config";
