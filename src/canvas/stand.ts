@@ -240,12 +240,12 @@ export const stand = async (
       { new: true }
     );
 
-    // 抽一下 杨威 buff
-    canForce = Math.random() < 0.3 ? true : false;
+    // 抽一下 宫寒 buff
+    canForce = Math.random() < 0.5 ? true : false;
 
     msgContent += `\n已扣除强制站街手续费 ${commission}，余额为 ${newResult?.balance}`;
 
-    if (canForce) msgContent += "\n恭喜您，获得杨威Buff，站街CD增加18小时";
+    if (canForce) msgContent += "\n恭喜您，获得宫寒Buff，站街CD增加18小时";
   }
 
   // 如果是随机
@@ -447,6 +447,9 @@ export const stand = async (
           atCount++;
         }
       });
+
+      console.log(message);
+      console.log(at);
 
       // 如果没at
       if (at == -1) {
